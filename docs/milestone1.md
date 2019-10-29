@@ -61,33 +61,33 @@ dir\
 				test_user_interface.py
 ```
 
-* What modules do you plan on including? What is their basic functionality?
+* What modules do you plan on including? What is their basic functionality?  
 We will have a main module, AutoDiffForward, for the user to use the forward mode of auto-differentiation of our package. We will also have a few utility packages, like input_parsing and fun_eval which help us keep our code organized by breaking the different related functions into modules. We will also have several modules for testing our package.
     
 
-* Where will your test suite live? Will you use TravisCI? CodeCov?
+* Where will your test suite live? Will you use TravisCI? CodeCov?  
 The test suites will live in test directory. Yes, we will use both TravisCI and CodeCov for testing.
 
-* How will you distribute your package (e.g. PyPI)?
+* How will you distribute your package (e.g. PyPI)?  
 We will distribute our package using TestPyPI.
 
-* How will you package your software? Will you use a framework? If so, which one and why? If not, why not?
+* How will you package your software? Will you use a framework? If so, which one and why? If not, why not?  
 We will use PyScaffold to package our software.
 
 ### Implementation
 
-* What are the core data structures?
+* What are the core data structures?  
 We will store vector input and output of functions as lists. We shouldn't need any more advanced data structures than lists for our program.
 
-* What classes will you implement?
+* What classes will you implement?  
 The main class we will implement for forward mode is `AutoDiffForward`, which will be the main interface for the user to use our package. We will also implement `AutoDiffForwardDemo` which can accept string representation of functions.
 
-* What method and name attributes will your classes have?
-Attributes: `val`, `der` for the value and derivative of the function. If the function output is a vector, these will be lists.
+* What method and name attributes will your classes have?  
+Attributes: `val`, `der` for the value and derivative of the function. If the function output is a vector, these will be lists.  
 We will implement `__add__`, `__raad__`, `__mul__`, `__rmul__`, `__sub__`, `__rsub__`, `__truediv__`, `__rtruediv__`, `__pow__`, `sin`, `tan`, `cos`, `exp`, `log`, `sqrt` for the AutoDiffForward class.
 
-* What external dependencies will you rely on?
+* What external dependencies will you rely on?  
 Currently we only plan to use numpy.
 
-* How will you deal with elementary functions like sin, sqrt, log, and exp (and all the others)?
+* How will you deal with elementary functions like sin, sqrt, log, and exp (and all the others)?  
 We will use numpy’s functions to handle the function value of these elementary functions. We will have python functions or classes to evaluate the derivatives of each of these, so our package knows the derivative rules for each elementary function.
