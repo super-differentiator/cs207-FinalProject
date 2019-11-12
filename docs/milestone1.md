@@ -72,7 +72,7 @@ The test suites will live in test directory. Yes, we will use both TravisCI and 
 We will distribute our package using TestPyPI.
 
 * How will you package your software? Will you use a framework? If so, which one and why? If not, why not?  
-We will use PyScaffold to package our software.
+We will use PyScaffold to package our software. We choose it because it is convenient.
 
 ### Implementation
 
