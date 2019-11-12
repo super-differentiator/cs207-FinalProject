@@ -1,13 +1,12 @@
 import numpy as np
 
 class AD:
-	def __init__(self, alpha):
-		self._alpha = alpha
+	def __init__(self):
 		self.val = 0
 		self.der = 0
 
 	def __add__(self, other):
-		newAutoDiff = X(self._alpha)
+		newAutoDiff = AD()
 
 		try:
 			newAutoDiff.val = self.val + other.val
@@ -22,7 +21,7 @@ class AD:
 		return self.__add__(other)
 
 	def __mul__(self, other):
-		newAutoDiff = X(self._alpha)
+		newAutoDiff = AD()
 
 		try:
 			newAutoDiff.val = self.val * other.val
@@ -39,7 +38,6 @@ class AD:
 class X(AD):
 	def __init__(self, alpha):
 		# Initialize as f(x) = x
-		super().__init__(alpha)
 		self.val = alpha
 		self.der = 1.0
 
