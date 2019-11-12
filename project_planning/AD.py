@@ -51,10 +51,20 @@ class Cos(AD):
 		self.val = np.cos(fun.val)
 		self.der = fun.der * -np.sin(fun.val)
 
+class Tan(AD):
+	def __init__(self, fun):
+		self.val = np.tan(fun.val)
+		self.der = fun.der / (np.cos(fun.val) ** 2)
+
 class Ln(AD):
 	def __init__(self, fun):
 		self.val = np.log(fun.val)
 		self.der = fun.der / fun.val
+
+class Exp(AD):
+	def __init__(self, fun):
+		self.val = np.exp(fun.val)
+		self.der = fun.der * np.exp(fun.val)
 
 def main():
 	x = X(3)
@@ -67,8 +77,14 @@ def main():
 	cosx = Cos(fx)
 	print('cos[f(x)]:', cosx.val, cosx.der)
 
+	tanx = Tan(fx)
+	print('tan[f(x)]:', tanx.val, tanx.der)
+
 	lnx = Ln(fx)
 	print('ln[f(x)]:', lnx.val, lnx.der)
+
+	expx = Exp(fx)
+	print('Exp[f(x)]:', expx.val, expx.der)
 
 if __name__ == '__main__':
 	main()
