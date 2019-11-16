@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from AD import X, Cos, Sin, Tan, Log, Exp
+from ..AD import X, Cos, Sin, Tan, Log, Exp
 
 
 def test_create_x():
