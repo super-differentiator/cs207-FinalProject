@@ -204,6 +204,12 @@ class AD:
         newAutoDiff.der = other ** self.val * np.log(other)
         return newAutoDiff
 
+    def __neg__(self):
+        newAutoDiff = AD()
+        newAutoDiff.val = -self.val
+        newAutoDiff.der = -self.der
+        return newAutoDiff
+
     def __str__(self):
         """
 

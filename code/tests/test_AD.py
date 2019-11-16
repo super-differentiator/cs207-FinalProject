@@ -44,6 +44,11 @@ def test_create_exp():
     assert x1.val == np.exp(2)
     assert x1.der == np.exp(2)
 
+def test_neg():
+    x = X(2)
+    x1 = -x
+    assert x1.val == -2
+    assert x1.der == -1
 
 def test_add():
     x = X(2)
