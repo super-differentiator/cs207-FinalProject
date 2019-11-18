@@ -24,14 +24,16 @@ class AD:
 		v = 0
 		d = 0
 
-		try:
+		if isinstance(other, AD):
 			# Adding two functions, f(x) + g(x)
 			v = self.val + other.val
 			d = self.der + other.der
-		except AttributeError:
+		elif isinstance(other, (int, float)):
 			# Adding a function and scalar, f(x) + c
 			v = self.val + other
 			d = self.der
+		else:
+			raise ValueError('Operand in addition is invalid. Operand must be an AD object or a number.')
 
 		return AD(v, d)
 
@@ -42,14 +44,16 @@ class AD:
 		v = 0
 		d = 0
 
-		try:
+		if isinstance(other, AD):
 			# Multiplying two functions, f(x) * g(x)
 			v = self.val * other.val
 			d = self.val * other.der + self.der * other.val
-		except AttributeError:
+		elif isinstance(other, (int, float)):
 			# Multiplying the function by a constant, f(x) * c
 			v = self.val * other
 			d = self.der * other
+		else:
+			raise ValueError('Operand in multiplication is invalid. Operand must be an AD object or a number.')
 
 		return AD(v, d)
 
@@ -60,21 +64,30 @@ class AD:
 		v = 0
 		d = 0
 
-		try:
+		if isinstance(other, AD):
 			# Subtracting two functions, f(x) - g(x)
 			v = self.val - other.val
 			d = self.der - other.der
-		except AttributeError:
+		elif isinstance(other, (int, float)):
 			# Subtracting a constant from the function, f(x) - c
 			v = self.val - other
 			d = self.der
+		else:
+			raise ValueError('Operand in subtraction is invalid. Operand must be an AD object or a number.')
 
 		return AD(v, d)
 
 	def __rsub__(self, other):
+		v = 0
+		d = 0
+
 		# Subtracting the function from a constant, c - f(x)
-		v = other - self.val
-		d = self.der
+		if isinstance(other, (int, float)):
+			v = other - self.val
+			d = -self.der
+		else:
+			raise ValueError('Operand in subtraction is invalid. Operand must be an AD object or a number.')
+
 		return AD(v, d)
 
 	def __neg__(self):
@@ -84,40 +97,58 @@ class AD:
 		v = 0
 		d = 0
 
-		try:
+		if isinstance(other, AD):
 			# Dividing two functions, f(x) / g(x)
 			v = self.val / other.val
 			d = (other.val * self.der - self.val * other.der) / (other.val ** 2)
-		except AttributeError:
+		elif isinstance(other, (int, float)):
 			# Dividing the function by a constant, f(x) / c
 			v = self.val / other
 			d = self.der / other
+		else:
+			raise ValueError('Operand in division is invalid. Operand must be an AD object or a number.')
 
 		return AD(v, d)
 
 	def __rtruediv__(self, other):
+		v = 0
+		d = 0
+
 		# Dividing a constant by the function, c / f(x)
-		v = other / self.val
-		d = -other * self.der / (self.val ** 2)
+		if isinstance(other, (int, float)):
+			v = other / self.val
+			d = -other * self.der / (self.val ** 2)
+		else:
+			raise ValueError('Operand in division is invalid. Operand must be an AD object or a number.')
+
 		return AD(v, d)
 
 	def __pow__(self, other):
 		v = 0
 		d = 0
 
-		try:
+		if isinstance(other, AD):
 			# Raising function to a function, f(x) ^ g(x)
 			v = self.val ** other.val
 			d = self.val ** (other.val - 1) * (other.val * self.der + self.val * np.log(self.val) * other.der)
-		except AttributeError:
+		elif isinstance(other, (int, float)):
 			# Raising the function to a constant, f(x) ^ c
 			v = self.val ** other
 			d = other * self.val ** (other - 1) * self.der
+		else:
+			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
 		return AD(v, d)
 
 	def __rpow__(self, other):
-		# Raising constant to the function, c ^ f(x)
-		v = other ** self.val
-		d = np.log(other) * other ** self.val * self.der
+		v = 0
+		d = 0
+
+		if isinstance(other, (int, float)):
+			# Raising constant to the function, c ^ f(x)
+			v = other ** self.val
+			d = np.log(other) * other ** self.val * self.der
+		else:
+			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
+
 		return AD(v, d)
