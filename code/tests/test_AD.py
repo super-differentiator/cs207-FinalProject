@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 
-from AutoDifferentiation.forward.Functions import X, Sin, Cos, Tan, Ln, Log, Exp, Abs
+from superdifferentiator.forward.functions import X, Sin, Cos, Tan, Ln, Log, Exp, Abs
 
 # Error message for passing invalid argument to an elementary function
 E1 = 'Invalid first argument, must be an AD object or a number.'

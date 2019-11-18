@@ -1,7 +1,7 @@
 # CS207 Final Project
 
 import numpy as np
-from AutoDifferentiation.forward.AD import AD
+from superdifferentiator.forward.AD import AD
 
 class X(AD):
 	'''The X class is the base function class that you begin with, representing
