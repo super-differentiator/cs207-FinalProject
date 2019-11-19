@@ -1,4 +1,4 @@
-from AutoDifferentiation.forward.AD import X, Sin, Cos, Ln
+from superdifferentiator.forward.functions import X, Sin, Cos, Ln
 x = X(7.2)
 fx = Ln(Cos(Sin((x ** 2) + (3 * x) - 4)))
 minus_x = -x
