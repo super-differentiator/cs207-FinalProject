@@ -6,5 +6,7 @@ before_install:
     - pip install codecov
 script:
     - pytest --cov=./
+env:
+    - CODECOV_TOKEN=25ed5e48-9d35-4f2e-901e-f43647327ff3
 after_success:
     - codecov
