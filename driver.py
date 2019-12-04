@@ -1,7 +1,6 @@
-from superdifferentiator.forward.functions import X, Sin, Cos, Ln
-x = X(7.2)
-fx = Ln(Cos(Sin((x ** 2) + (3 * x) - 4)))
-minus_x = -x
+from superdifferentiator.forward.functions import X
 
-print(fx.val, fx.der)
-print(minus_x.val, minus_x.der)
+x = X(2, 'x')
+y = X(2, 'y')
+f = (5 * x) ** (2 * y)
+print(f.val, f.der)

@@ -9,196 +9,219 @@ E1 = 'Invalid first argument, must be an AD object or a number.'
 def test_create_x():
 	x = X(2)
 	assert x.val == 2
-	assert x.der == 1
+	assert x.der['x'] == 1
 
 
 def test_create_cos():
 	x = X(2)
 	x1 = Cos(x)
 	assert x1.val == np.cos(2)
-	assert x1.der == -np.sin(2)
+	assert x1.der['x'] == -np.sin(2)
 
 def test_cos2():
 	c = Cos(8)
 	assert c.val == np.cos(8)
-	assert c.der == 0
+	assert c.der['x'] == 0
 
 
 def test_create_sin():
 	x = X(2)
 	x1 = Sin(x)
 	assert x1.val == np.sin(2)
-	assert x1.der == np.cos(2)
+	assert x1.der['x'] == np.cos(2)
 
 def test_sin2():
 	s = Sin(5)
 	assert s.val == np.sin(5)
-	assert s.der == 0
+	assert s.der['x'] == 0
 
 def test_create_tan():
 	x = X(2)
 	x1 = Tan(x)
 	assert x1.val == np.tan(2)
-	assert x1.der == 1 / np.cos(2) ** 2
+	assert x1.der['x'] == 1 / np.cos(2) ** 2
 
 def test_tan2():
 	t = Tan(11)
 	assert t.val == np.tan(11)
-	assert t.der == 0
+	assert t.der['x'] == 0
 
 def test_create_ln():
 	x = X(2)
 	x1 = Ln(x)
 	assert x1.val == np.log(2)
-	assert x1.der == 0.5
+	assert x1.der['x'] == 0.5
 
 def test_ln2():
 	ln = Ln(5)
 	assert ln.val ==  np.log(5)
-	assert ln.der == 0
+	assert ln.der['x'] == 0
 
 def test_create_log():
 	x = X(2)
 	log = Log(x, 10)
 	assert log.val == np.log(2) / np.log(10)
-	assert log.der == 1 / (2 * np.log(10))
+	assert log.der['x'] == 1 / (2 * np.log(10))
 
 def test_log2():
 	log = Log(100, 10)
 	assert log.val == 2
-	assert log.der == 0
+	assert log.der['x'] == 0
 
 def test_create_exp():
 	x = X(2)
 	x1 = Exp(x)
 	assert x1.val == np.exp(2)
-	assert x1.der == np.exp(2)
+	assert x1.der['x'] == np.exp(2)
 
 def test_exp2():
 	exp = Exp(5)
 	assert exp.val == np.exp(5)
-	assert exp.der == 0
+	assert exp.der['x'] == 0
 
 def test_create_abs():
 	x = X(2)
 	a = Abs(x)
 	assert a.val == 2
-	assert a.der == 1
+	assert a.der['x'] == 1
 
 def test_abs2():
 	a = Abs(-3)
 	assert a.val == 3
-	assert a.der == 0
+	assert a.der['x'] == 0
 
 def test_neg():
 	x = X(2)
 	x1 = -x
 	assert x1.val == -2
-	assert x1.der == -1
+	assert x1.der['x'] == -1
 
 def test_add():
 	x = X(2)
 	f = x + 3
 
 	assert f.val == 5
-	assert f.der == 1
+	assert f.der['x'] == 1
 
 
 def test_add1():
 	x = X(2)
 	f = x + x
 	assert f.val == 4
-	assert f.der == 2
+	assert f.der['x'] == 2
+
+def test_add2():
+	x = X(2, 'x')
+	y = X(3, 'y')
+	f = (5 * x) + (8 * y)
+	assert f.val == 34
+	assert f.der['x'] == 5
+	assert f.der['y'] == 8
 
 
 def test_radd():
 	x = X(2)
 	f = 3 + x
 	assert f.val == 5
-	assert f.der == 1
+	assert f.der['x'] == 1
 
 
 def test_sub():
 	x = X(2)
 	f = x - 3
 	assert f.val == -1
-	assert f.der == 1
+	assert f.der['x'] == 1
 
 
 def test_sub1():
 	x = X(2)
 	f = x - x
 	assert f.val == 0
-	assert f.der == 0
+	assert f.der['x'] == 0
 
 
 def test_rsub():
 	x = X(2)
 	f = 3 - x
 	assert f.val == 1
-	assert f.der == -1
+	assert f.der['x'] == -1
 
 
 def test_mul():
 	x = X(2)
 	f = x * 3
 	assert f.val == 6
-	assert f.der == 3
+	assert f.der['x'] == 3
 
 
 def test_mul1():
 	x = X(2)
 	f = x * x
 	assert f.val == 4
-	assert f.der == 4
+	assert f.der['x'] == 4
+
+def test_mul2():
+	x = X(4, 'x')
+	y = X(5, 'y')
+	f = (2 * x) * (3 * y)
+	assert f.val == 120
+	assert f.der['x'] == 30
+	assert f.der['y'] == 24
 
 
 def test_rmul():
 	x = X(2)
 	f = 3 * x
 	assert f.val == 6
-	assert f.der == 3
+	assert f.der['x'] == 3
 
 
 def test_div():
 	x = X(2)
 	f = x / 2
 	assert f.val == 1
-	assert f.der == 0.5
+	assert f.der['x'] == 0.5
 
 
 def test_div1():
 	x = X(2)
 	f = x / x
 	assert f.val == 1
-	assert f.der == 0
+	assert f.der['x'] == 0
 
 
 def test_rdiv():
 	x = X(2)
 	f = 2 / x
 	assert f.val == 1
-	assert f.der == -0.5
+	assert f.der['x'] == -0.5
 
 
 def test_pow():
 	x = X(2)
 	f = x ** 3
 	assert f.val == 8
-	assert f.der == 12
+	assert f.der['x'] == 12
 
 def test_pow2():
 	x = X(2)
 	f = x ** x
 	assert f.val == 4
-	assert f.der == 4 + np.log(16)
+	assert f.der['x'] == 4 + np.log(16)
 
+def test_pow3():
+	x = X(2, 'x')
+	y = X(2, 'y')
+	f = (5 * x) ** (2 * y)
+	assert f.val == 10000
+	assert f.der['x'] == 20000
+	assert f.der['y'] == 20000 * np.log(10)
 
 def test_rpow():
 	x = X(2)
 	f = 3 ** x
 	assert f.val == 9
-	assert f.der == 9 * np.log(3)
+	assert f.der['x'] == 9 * np.log(3)
 
 
 def add_invalid():
