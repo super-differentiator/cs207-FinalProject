@@ -10,11 +10,15 @@ class X(AD):
 	exponents, and elementary functions like sin, cos, log, etc.
 	'''
 
-	def __init__(self, alpha, name = 'x'):
-		# Dictionary of partial derivatives. Currently only one var, so only one partial
-		ders = {name: 1}
+	def __init__(self, alphas, name = 'x'):
+		# If a scalar is given, convert it to a list
+		if isinstance(alphas, (int, float)):
+			alphas = [alphas]
 
-		super().__init__(alpha, ders)
+		# Dictionary of partial derivatives. Currently only one var, so only one partial
+		ders = {name: [1] * len(alphas)}
+
+		super().__init__(alphas, ders)
 
 class Ln(AD):
 	'''The Ln class implements the natural log function. You initialize an Ln object
@@ -27,20 +31,22 @@ class Ln(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# Natural log of a function, ln[f(x)]
-			val = np.log(fun.val)
-
+			val = [0] * len(fun.val)
 			der = {}
-			for var in fun.der.keys():
-				der[var] = fun.der[var] / fun.val
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
 
+			for i1 in range(len(fun.val)):
+				val[i1] = np.log(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = fun.der[var][i1] / fun.val[i1]
 		elif isinstance(fun, (int, float)):
-			# Natural log of a constant, ln(c)
-			val = np.log(fun)
-			der['x'] = 0
+			val = [np.log(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
-
+			
 		super().__init__(val, der)
 
 class Log(AD):
@@ -50,25 +56,35 @@ class Log(AD):
 	'''
 
 	def __init__(self, fun, a):
+		t = Ln(fun) / np.log(a)
+		super().__init__(t.val, t.der)
+
+		'''
 		val = 0
 		der = {}
 
 		if isinstance(fun, AD):
-			# Log base a of function, log_a[f(x)]
-			val = np.log(fun.val) / np.log(a)
+			val = [0] * len(fun.val)
 
-			der = {}
-			for var in fun.der.keys():
-				der[var] = fun.der[var] / (np.log(a) * fun.val)
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				# Log base a of function, log_a[f(x)]
+				val = np.log(fun.val[i1]) / np.log(a)
+
+				for var in fun.der.keys():
+					der[var][i1] = fun.der[var][i1] / (np.log(a) * fun.val[i1])
 
 		elif isinstance(fun, (int, float)):
 			# Log base a of a constant, log_a(c)
 			val = np.log(fun) / np.log(a)
-			der['x'] = 0
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
 		super().__init__(val, der)
+		'''
 
 class Exp(AD):
 	'''The Exp class implements the exponential function, exp[f(x)]. You initialize
@@ -81,17 +97,22 @@ class Exp(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# e raised to a function, exp[f(x)]
-			val = np.exp(fun.val)
+			val = [0]
 
-			der = {}
-			for var in fun.der.keys():
-				der[var] = np.exp(fun.val) * fun.der[var]
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				# e raised to a function, exp[f(x)]
+				val[i1] = np.exp(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = np.exp(fun.val[i1]) * fun.der[var][i1]
 
 		elif isinstance(fun, (int, float)):
 			# e raised to a constant, exp(c)
-			val = np.exp(fun)
-			der['x'] = 0
+			val = [np.exp(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
@@ -111,17 +132,21 @@ class Abs(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# Absolute value of a function, |f(x)|
-			val = np.abs(fun.val)
+			val = [0] * len(fun.val)
 
-			der = {}
-			for var in fun.der.keys():
-				der[var] = fun.val * fun.der[var] / np.abs(fun.val)
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				val[i1] = np.abs(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = fun.val[i1] * fun.der[var][i1] / np.abs(fun.val[i1])
 
 		elif isinstance(fun, (int, float)):
 			# Absolute value of a constant, |c|
-			val = np.abs(fun)
-			der['x'] = 0
+			val = [np.abs(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
@@ -138,17 +163,22 @@ class Sin(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# Sin of a function, sin[f(x)]
-			val = np.sin(fun.val)
+			val = [0] * len(fun.val)
 
-			der = {}
-			for var in fun.der.keys():
-				der[var] = fun.der[var] * np.cos(fun.val)
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				# Sin of a function, sin[f(x)]
+				val = np.sin(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = fun.der[var][i1] * np.cos(fun.val[i1])
 
 		elif isinstance(fun, (int, float)):
 			# Sin of a constant, sin(c)
-			val = np.sin(fun)
-			der['x'] = 0
+			val = [np.sin(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
@@ -165,16 +195,22 @@ class Cos(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# Cosine of a function, cos[f(x)]
-			val = np.cos(fun.val)
+			val = [0] * len(fun.val)
 
-			for var in fun.der.keys():
-				der[var] = -fun.der[var] * np.sin(fun.val)
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				# Cosine of a function, cos[f(x)]
+				val = np.cos(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = -fun.der[var][i1] * np.sin(fun.val[i1])
 
 		elif isinstance(fun, (int, float)):
 			# Cosine of a constant, cos(c)
-			val = np.cos(fun)
-			der['x'] = 0
+			val = [np.cos(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
@@ -191,17 +227,121 @@ class Tan(AD):
 		der = {}
 
 		if isinstance(fun, AD):
-			# Tangent of a function, tan[f(x)]
-			val = np.tan(fun.val)
+			val = [0] * len(fun.val)
 
-			der = {}
-			for var in fun.der.keys():
-				der[var] = fun.der[var] / (np.cos(fun.val) ** 2)
+			for v in fun.der.keys():
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				# Tangent of a function, tan[f(x)]
+				val = np.tan(fun.val[i1])
+
+				for var in fun.der.keys():
+					der[var][i1] = fun.der[var][i1] / (np.cos(fun.val[i1]) ** 2)
 
 		elif isinstance(fun, (int, float)):
-			val = np.tan(fun)
-			der['x'] = 0
+			val = [np.tan(fun)]
+			der['x'] = [0]
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
 		super().__init__(val, der)
+
+class Sqrt(AD):
+	def __init__(self, fun):
+		t = fun ** 0.5
+		super().__init__(t.val, t.der)
+
+class Arcsin(AD):
+	def __init__(self, fun):
+		val = 0
+		der = {}
+
+		if isinstance(fun, AD):
+			val = [0] * len(fun.val)
+
+			for v in fun.variables:
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				val[i1] = np.arcsin(fun.val[i1])
+
+				for var in fun.variables:
+					der[var][i1] = fun.der[var][i1] / np.sqrt(1 - fun.val[i1] ** 2)
+
+		elif isinstance(fun, (int, float)):
+			val = [np.arcsin(fun)]
+			der['x'] = [0]
+		else:
+			raise ValueError('Invalid first argument, must be an AD object or a number.')
+
+		super().__init__(val, der)
+
+class Arccos(AD):
+	def __init__(self, fun):
+		val = 0
+		der = {}
+
+		if isinstance(fun, AD):
+			val = [0] * len(fun.val)
+
+			for v in fun.variables:
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				val[i1] = np.arccos(fun.val[i1])
+
+				for var in fun.variables:
+					der[var][i1] = -fun.der[var][i1] / np.sqrt(1 - fun.val[i1] ** 2)
+
+		elif isinstance(fun, (int, float)):
+			val = [np.arccos(fun)]
+			der['x'] = [0]
+		else:
+			raise ValueError('Invalid first argument, must be an AD object or a number.')
+
+		super().__init__(val, der)
+
+class Arctan(AD):
+	def __init__(self, fun):
+		val = 0
+		der = {}
+
+		if isinstance(fun, AD):
+			val = [0] * len(fun.val)
+
+			for v in fun.variables:
+				der[v] = [0] * len(fun.val)
+
+			for i1 in range(len(fun.val)):
+				val[i1] = np.arctan(fun.val[i1])
+
+				for var in fun.variables:
+					der[var][i1] = fun.der[var][i1] / ((fun.val[i1] ** 2) + 1)
+		elif isinstance(fun, (int, float)):
+			val = [np.arctan(fun)]
+			der['x'] = [0]
+		else:
+			raise ValueError('Invalid first argument, must be an AD object or a number.')
+
+		super().__init__(val, der)
+
+class Sinh(AD):
+	def __init__(self, fun):
+		t = (Exp(fun) - Exp(-fun)) / 2
+		super().__init__(t.val, t.der)
+
+class Cosh(AD):
+	def __init__(self, fun):
+		t = (Exp(fun) + Exp(-fun)) / 2
+		super().__init__(t.val, t.der)
+
+class Tanh(AD):
+	def __init__(self, fun):
+		t = Sinh(fun) / Cosh(fun)
+		super().__init__(t.val, t.der)
+
+class Logistic(AD):
+	def __init__(self, fun):
+		t = 1 / (1 + Exp(-fun))
+		super().__init__(t.val, t.der)

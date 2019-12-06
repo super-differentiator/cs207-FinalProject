@@ -8,44 +8,50 @@ class AD:
 	and raising to a power, by overloading the +, -, *, /, and ** operators.
 	'''
 
-	def __init__(self, val, der):
-		self._val = val
+	def __init__(self, vals, der):
+		self._vals = vals
 		self._der = der # Dictionary of partial derivatives
 
 	@property
 	def val(self):
-		return self._val
+		return self._vals
 
 	@property
 	def der(self):
 		return self._der
 
+	@property
+	def variables(self):
+		return set(self.der.keys())
+
+	@property
+	def num_vals(self):
+		return len(self.val)
+
 	def __add__(self, other):
-		val = 0
-		der = 0
+		val = [0] * self.num_vals
+		der = {}
 
 		if isinstance(other, AD):
-			# Adding two functions, f + g
-			val = self.val + other.val
-
-			# Get list of all variables of the two functions
 			myVars, otherVars, allVars = getVars(self.der, other.der)
+			for v in allVars:
+				der[v] = [0] * self.num_vals
 
-			# Dictionary of new partial derivatives
-			der = {}
+			for i1 in range(self.num_vals):
+				# Adding two functions, f + g
+				val[i1] = self.val[i1] + other.val[i1]
 
-			# Compute each partial derivative
-			for var in allVars:
-				if var in myVars and var in otherVars:
-					der[var] = self.der[var] + other.der[var]
-				elif var in myVars and var not in otherVars:
-					der[var] = self.der[var]
-				else:
-					der[var] = other.der[var]
+				# Compute each partial derivative
+				for var in allVars:
+					if var in myVars and var in otherVars:
+						der[var][i1] = self.der[var][i1] + other.der[var][i1]
+					elif var in myVars and var not in otherVars:
+						der[var][i1] = self.der[var][i1]
+					else:
+						der[var][i1] = other.der[var][i1]
 
 		elif isinstance(other, (int, float)):
-			# Adding a function and scalar, f(x) + c
-			val = self.val + other
+			val = [v + other for v in self.val]
 			der = self.der.copy()
 		else:
 			raise ValueError('Operand in addition is invalid. Operand must be an AD object or a number.')
@@ -57,34 +63,35 @@ class AD:
 
 	def __mul__(self, other):
 		val = 0
-		der = 0
+		der = {}
 
 		if isinstance(other, AD):
-			# Multiplying two functions, f(x) * g(x)
-			val = self.val * other.val
+			val = [0] * self.num_vals
 
-			# Get list of all variables of the two functions
 			myVars, otherVars, allVars = getVars(self.der, other.der)
+			for v in allVars:
+				der[v] = [0] * self.num_vals
 
-			# Dictionary of new partial derivatives
-			der = {}
+			for i1 in range(self.num_vals):
+				# Multiplying two functions, f(x) * g(x)
+				val[i1] = self.val[i1] * other.val[i1]
 
-			for var in allVars:
-				if var in myVars and var in otherVars:
-					der[var] = self.der[var] * other.val + self.val * other.der[var]
-				elif var in myVars and var not in otherVars:
-					der[var] = other.val * self.der[var]
-				else:
-					der[var] = self.val * other.der[var]
+				for var in allVars:
+					if var in myVars and var in otherVars:
+						der[var][i1] = self.der[var][i1] * other.val[i1] + self.val[i1] * other.der[var][i1]
+					elif var in myVars and var not in otherVars:
+						der[var][i1] = other.val[i1] * self.der[var][i1]
+					else:
+						der[var][i1] = self.val[i1] * other.der[var][i1]
 
 		elif isinstance(other, (int, float)):
 			# Multiplying the function by a constant, f(x) * c
-			val = self.val * other
+			print('Val:', self.val, 'Der:', self.der)
+			val = [v * other for v in self.val]
 
 			# Multiply each partial by the constant
-			der = {}
-			for key in self.der.keys():
-				der[key] = self.der[key] * other
+			for key in self.variables:
+				der[key] = [d * other for d in self.der[key]]
 
 		else:
 			raise ValueError('Operand in multiplication is invalid. Operand must be an AD object or a number.')
@@ -96,14 +103,14 @@ class AD:
 
 	def __sub__(self, other):
 		try:
-			return self + (-1) * other
-		except ValueError:
+			return self + -other
+		except (TypeError, ValueError):
 			raise ValueError('Operand in subtraction is invalid. Operand must be an AD object or a number.')
 
 	def __rsub__(self, other):
 		try:
-			return (-1) * self + other
-		except ValueError:
+			return -self + other
+		except (TypeError, ValueError):
 			raise ValueError('Operand in subtraction is invalid. Operand must be an AD object or a number.')
 
 	def __neg__(self):
@@ -122,36 +129,35 @@ class AD:
 			raise ValueError('Operand in division is invalid. Operand must be an AD object or a number.')
 
 	def __pow__(self, other):
-		val = 0
-		der = 0
+		val = [0] * self.num_vals
+		der = {}
 
 		if isinstance(other, AD):
-			# Raising function to a function, f(x) ^ g(x)
-			val = self.val ** other.val
-
-			# Get list of all variables of the two functions
 			myVars, otherVars, allVars = getVars(self.der, other.der)
+			for v in allVars:
+				der[v] = [0] * self.num_vals
 
-			# Dictionary of new partial derivatives
-			der = {}
+			for i1 in range(self.num_vals):
+				# Raising function to a function, f(x) ^ g(x)
+				val[i1] = self.val[i1] ** other.val[i1]
 
-			for var in allVars:
-				if var in myVars and var in otherVars: # f(x, y) ^ g(x, y)
-					der[var] = (self.val ** (other.val - 1)) * (self.der[var] * other.val + self.val * other.der[var] * np.log(self.val))
-				elif var in myVars and var not in otherVars: # f(x) ^ g(y)
-					der[var] = other.val * self.der[var] * (self.val ** (other.val - 1))
-				else: # f(y) ^ g(x)
-					der[var] = np.log(self.val) * other.der[var] * (self.val ** other.val)
-
-			#d = self.val ** (other.val - 1) * (other.val * self.der + self.val * np.log(self.val) * other.der)
+				for var in allVars:
+					if var in myVars and var in otherVars: # f(x, y) ^ g(x, y)
+						der[var][i1] = (self.val[i1] ** (other.val[i1] - 1)) * (self.der[var][i1] * other.val[i1] + self.val[i1] * other.der[var][i1] * np.log(self.val[i1]))
+					elif var in myVars and var not in otherVars: # f(x) ^ g(y)
+						der[var][i1] = other.val[i1] * self.der[var][i1] * (self.val[i1] ** (other.val[i1] - 1))
+					else: # f(y) ^ g(x)
+						der[var][i1] = np.log(self.val[i1]) * other.der[var][i1] * (self.val[i1] ** other.val[i1])
 		elif isinstance(other, (int, float)):
 			# Raising the function to a constant, f(x) ^ c
-			val = self.val ** other
+			val = [v ** other for v in self.val]
 
-			der = {}
+			for v in self.variables:
+				der[v] = [0] * self.num_vals
 
-			for var in self.der.keys():
-				der[var] = other * self.der[var] * (self.val ** (other - 1))
+			for var in self.variables:
+				for i1 in range(self.num_vals):
+					der[var][i1] = other * self.der[var][i1] * (self.val[i1] ** (other - 1))
 
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
@@ -159,22 +165,30 @@ class AD:
 		return AD(val, der)
 
 	def __rpow__(self, other):
-		val = 0
-		der = 0
+		val = [0] * self.num_vals
+		der = {}
 
 		if isinstance(other, (int, float)):
-			# Raising constant to the function, c ^ f(x)
-			val = other ** self.val
+			for v in self.variables:
+				der[v] = [0] * self.num_vals
 
-			der = {}
+			for i1 in range(self.num_vals):
+				# Raising constant to the function, c ^ f(x)
+				val[i1] = other ** self.val[i1]
 
-			for var in self.der.keys():
-				der[var] = np.log(other) * self.der[var] * (other ** self.val)
+				for var in self.variables:
+					der[var][i1] = np.log(other) * self.der[var][i1] * (other ** self.val[i1])
 
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
 		return AD(val, der)
+
+	def __eq__(self, other):
+		return type(self) == type(other) and self.val == other.val and self.der == other.der
+
+	def __ne__(self, other):
+		return not self == other
 
 def getVars(der1, der2):
 	# Get list of all variables of the two functions
