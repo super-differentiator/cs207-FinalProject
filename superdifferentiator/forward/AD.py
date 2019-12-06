@@ -28,6 +28,18 @@ class AD:
 	def num_vals(self):
 		return len(self.val)
 
+	def jacobian(self):
+		allVars = list(self.variables)
+		jacs = []
+		for i1 in range(self.num_vals):
+			jacs.append(np.zeros((1, len(allVars))))
+
+		for i1 in range(self.num_vals):
+			for col in range(len(allVars)):
+				jacs[i1][0, col] = self.der[allVars[col]][i1]
+
+		return allVars, jacs
+
 	def __add__(self, other):
 		val = [0] * self.num_vals
 		der = {}
