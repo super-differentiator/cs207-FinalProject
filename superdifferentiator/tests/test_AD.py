@@ -33,6 +33,32 @@ def test_multiple_variables_and_values():
 	assert f_xy.der['x'] == [162, 288]
 	assert f_xy.der['y'] == [288, 192]
 
+def test_scalar_jacobian():
+	# This is basically just calculating the gradient of f(x, y) = x^2 * y^2
+	# since the Jacobian for a scalar function is the gradient.
+	x = X(3, 'x')
+	y = X(4, 'y')
+	fx = x * x * y * y
+	allVars, jacs = fx.jacobian()
+	assert 'x' in allVars
+	assert 'y' in allVars
+	
+	xIdx = allVars.index('x')
+	yIdx = allVars.index('y')
+	jac = jacs[0]
+	assert jac[0, xIdx] == 96
+	assert jac[0, yIdx] == 72
+
+def test_eq():
+	x1 = X(3)
+	x2 = X(3)
+	assert x1 == x2
+
+def test_neq():
+	x1 = X(3)
+	x2 = X(4)
+	assert x1 != x2
+
 def test_create_cos():
 	x = X(2)
 	x1 = Cos(x)
