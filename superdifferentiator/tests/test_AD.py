@@ -1,377 +1,326 @@
 import pytest
 import numpy as np
 
-from superdifferentiator.forward.functions import X, Sin, Cos, Tan, Ln, Log, Exp, Abs
-
-# Error message for passing invalid argument to an elementary function
-E1 = 'Invalid first argument, must be an AD object or a number.'
+from superdifferentiator.forward.functions import X, Sin, Cos, Tan, Ln, Log, Exp, Abs, Sqrt, Arcsin, Arccos, Arctan, Sinh, Cosh, Tanh, Logistic
 
 def test_create_x():
 	x = X(2)
-	assert x.val == 2
-	assert x.der['x'] == 1
+	assert x.val == [2]
+	assert x.der['x'] == [1]
 
+def test_multiple_values():
+	# f(x) = x^2 + 2x + 3, evaluate at f(3) and f(5)
+	x = X([3, 5])
+	fx = (x ** 2) + (2 * x) + 3
+	assert fx.val == [18, 38]
+	assert fx.der['x'] == [8, 12]
+
+def test_multiple_variables():
+	# f(x, y) = x^2 * y^3, evaluate at f(3, 4)
+	x = X(3, 'x')
+	y = X(4, 'y')
+	f_xy = (x ** 2) * (y ** 3)
+	assert f_xy.val == [576]
+	assert f_xy.der['x'] == [384]
+	assert f_xy.der['y'] == [432]
+
+def test_multiple_variables_and_values():
+	# f(x, y) = 2xy^2, evaluate at f(8, 9) and f(4, 12)
+	x = X([8, 4], 'x')
+	y = X([9, 12], 'y')
+	f_xy = 2 * x * (y ** 2)
+	assert f_xy.val == [1296, 1152]
+	assert f_xy.der['x'] == [162, 288]
+	assert f_xy.der['y'] == [288, 192]
 
 def test_create_cos():
 	x = X(2)
 	x1 = Cos(x)
-	assert x1.val == np.cos(2)
-	assert x1.der['x'] == -np.sin(2)
+	assert x1.val == [np.cos(2)]
+	assert x1.der['x'] == [-np.sin(2)]
 
 def test_cos2():
 	c = Cos(8)
-	assert c.val == np.cos(8)
-	assert c.der['x'] == 0
+	assert c.val == [np.cos(8)]
+	assert c.der['x'] == [0]
 
 
 def test_create_sin():
 	x = X(2)
 	x1 = Sin(x)
-	assert x1.val == np.sin(2)
-	assert x1.der['x'] == np.cos(2)
+	assert x1.val == [np.sin(2)]
+	assert x1.der['x'] == [np.cos(2)]
 
 def test_sin2():
 	s = Sin(5)
-	assert s.val == np.sin(5)
-	assert s.der['x'] == 0
+	assert s.val == [np.sin(5)]
+	assert s.der['x'] == [0]
 
 def test_create_tan():
 	x = X(2)
 	x1 = Tan(x)
-	assert x1.val == np.tan(2)
-	assert x1.der['x'] == 1 / np.cos(2) ** 2
+	assert x1.val == [np.tan(2)]
+	assert x1.der['x'] == [1 / np.cos(2) ** 2]
 
 def test_tan2():
 	t = Tan(11)
-	assert t.val == np.tan(11)
-	assert t.der['x'] == 0
+	assert t.val == [np.tan(11)]
+	assert t.der['x'] == [0]
 
 def test_create_ln():
 	x = X(2)
 	x1 = Ln(x)
-	assert x1.val == np.log(2)
-	assert x1.der['x'] == 0.5
+	assert x1.val == [np.log(2)]
+	assert x1.der['x'] == [0.5]
 
 def test_ln2():
 	ln = Ln(5)
-	assert ln.val ==  np.log(5)
-	assert ln.der['x'] == 0
+	assert ln.val == [ np.log(5)]
+	assert ln.der['x'] == [0]
 
 def test_create_log():
 	x = X(2)
 	log = Log(x, 10)
-	assert log.val == np.log(2) / np.log(10)
-	assert log.der['x'] == 1 / (2 * np.log(10))
+	assert log.val == [np.log(2) / np.log(10)]
+	assert log.der['x'] == [1 / (2 * np.log(10))]
 
 def test_log2():
 	log = Log(100, 10)
-	assert log.val == 2
-	assert log.der['x'] == 0
+
+	# Had to use approx since there was some floating point error on this one
+	assert log.val == [pytest.approx(np.log(100) / np.log(10))]
+	assert log.der['x'] == [0]
 
 def test_create_exp():
 	x = X(2)
 	x1 = Exp(x)
-	assert x1.val == np.exp(2)
-	assert x1.der['x'] == np.exp(2)
+	assert x1.val == [np.exp(2)]
+	assert x1.der['x'] == [np.exp(2)]
 
 def test_exp2():
 	exp = Exp(5)
-	assert exp.val == np.exp(5)
-	assert exp.der['x'] == 0
+	assert exp.val == [np.exp(5)]
+	assert exp.der['x'] == [0]
 
 def test_create_abs():
 	x = X(2)
 	a = Abs(x)
-	assert a.val == 2
-	assert a.der['x'] == 1
+	assert a.val == [2]
+	assert a.der['x'] == [1]
 
 def test_abs2():
 	a = Abs(-3)
-	assert a.val == 3
-	assert a.der['x'] == 0
+	assert a.val == [3]
+	assert a.der['x'] == [0]
 
 def test_neg():
 	x = X(2)
 	x1 = -x
-	assert x1.val == -2
-	assert x1.der['x'] == -1
+	assert x1.val == [-2]
+	assert x1.der['x'] == [-1]
 
 def test_add():
 	x = X(2)
 	f = x + 3
 
-	assert f.val == 5
-	assert f.der['x'] == 1
+	assert f.val == [5]
+	assert f.der['x'] == [1]
 
 
 def test_add1():
 	x = X(2)
 	f = x + x
-	assert f.val == 4
-	assert f.der['x'] == 2
+	assert f.val == [4]
+	assert f.der['x'] == [2]
 
 def test_add2():
 	x = X(2, 'x')
 	y = X(3, 'y')
 	f = (5 * x) + (8 * y)
-	assert f.val == 34
-	assert f.der['x'] == 5
-	assert f.der['y'] == 8
+	assert f.val == [34]
+	assert f.der['x'] == [5]
+	assert f.der['y'] == [8]
 
 
 def test_radd():
 	x = X(2)
 	f = 3 + x
-	assert f.val == 5
-	assert f.der['x'] == 1
+	assert f.val == [5]
+	assert f.der['x'] == [1]
 
 
 def test_sub():
 	x = X(2)
 	f = x - 3
-	assert f.val == -1
-	assert f.der['x'] == 1
+	assert f.val == [-1]
+	assert f.der['x'] == [1]
 
 
 def test_sub1():
 	x = X(2)
 	f = x - x
-	assert f.val == 0
-	assert f.der['x'] == 0
+	assert f.val == [0]
+	assert f.der['x'] == [0]
 
 
 def test_rsub():
 	x = X(2)
 	f = 3 - x
-	assert f.val == 1
-	assert f.der['x'] == -1
+	assert f.val == [1]
+	assert f.der['x'] == [-1]
 
 
 def test_mul():
 	x = X(2)
 	f = x * 3
-	assert f.val == 6
-	assert f.der['x'] == 3
+	assert f.val == [6]
+	assert f.der['x'] == [3]
 
 
 def test_mul1():
 	x = X(2)
 	f = x * x
-	assert f.val == 4
-	assert f.der['x'] == 4
+	assert f.val == [4]
+	assert f.der['x'] == [4]
 
 def test_mul2():
 	x = X(4, 'x')
 	y = X(5, 'y')
 	f = (2 * x) * (3 * y)
-	assert f.val == 120
-	assert f.der['x'] == 30
-	assert f.der['y'] == 24
+	assert f.val == [120]
+	assert f.der['x'] == [30]
+	assert f.der['y'] == [24]
 
 
 def test_rmul():
 	x = X(2)
 	f = 3 * x
-	assert f.val == 6
-	assert f.der['x'] == 3
+	assert f.val == [6]
+	assert f.der['x'] == [3]
 
 
 def test_div():
 	x = X(2)
 	f = x / 2
-	assert f.val == 1
-	assert f.der['x'] == 0.5
+	assert f.val == [1]
+	assert f.der['x'] == [0.5]
 
 
 def test_div1():
 	x = X(2)
 	f = x / x
-	assert f.val == 1
-	assert f.der['x'] == 0
+	assert f.val == [1]
+	assert f.der['x'] == [0]
 
 
 def test_rdiv():
 	x = X(2)
 	f = 2 / x
-	assert f.val == 1
-	assert f.der['x'] == -0.5
+	assert f.val == [1]
+	assert f.der['x'] == [-0.5]
 
 
 def test_pow():
 	x = X(2)
 	f = x ** 3
-	assert f.val == 8
-	assert f.der['x'] == 12
+	assert f.val == [8]
+	assert f.der['x'] == [12]
 
 def test_pow2():
 	x = X(2)
 	f = x ** x
-	assert f.val == 4
-	assert f.der['x'] == 4 + np.log(16)
+	assert f.val == [4]
+	assert f.der['x'] == [4 + np.log(16)]
 
 def test_pow3():
 	x = X(2, 'x')
 	y = X(2, 'y')
 	f = (5 * x) ** (2 * y)
-	assert f.val == 10000
-	assert f.der['x'] == 20000
-	assert f.der['y'] == 20000 * np.log(10)
+	assert f.val == [10000]
+	assert f.der['x'] == [20000]
+	assert f.der['y'] == [20000 * np.log(10)]
 
 def test_rpow():
 	x = X(2)
 	f = 3 ** x
-	assert f.val == 9
-	assert f.der['x'] == 9 * np.log(3)
+	assert f.val == [9]
+	assert f.der['x'] == [9 * np.log(3)]
 
+def test_arcsin():
+	x = X(0.5)
+	f = Arcsin(x)
+	assert f.val == [np.arcsin(0.5)]
+	assert f.der['x'] == [1 / np.sqrt(1 - 0.5 ** 2)]
 
-def add_invalid():
+def test_arcsin2():
+	f = Arcsin(0.5)
+	assert f.val == [np.arcsin(0.5)]
+	assert f.der['x'] == [0]
+
+def test_arccos():
+	x = X(0.5)
+	f = Arccos(x)
+	assert f.val == [np.arccos(0.5)]
+	assert f.der['x'] == [-1 / np.sqrt(1 - 0.5 ** 2)]
+
+def test_arccos2():
+	f = Arccos(0.5)
+	assert f.val == [np.arccos(0.5)]
+	assert f.der['x'] == [0]
+
+def test_arctan():
+	x = X(0.5)
+	f = Arctan(x)
+	assert f.val == [np.arctan(0.5)]
+	assert f.der['x'] == [1 / ((0.5 ** 2) + 1)]
+
+def test_arctan2():
+	f = Arctan(0.5)
+	assert f.val == [np.arctan(0.5)]
+	assert f.der['x'] == [0]
+
+def test_sinh():
 	x = X(2)
-	f = x + 'hello'
+	f = Sinh(x)
+	assert f.val == [pytest.approx(np.sinh(2))]
+	assert f.der['x'] == [pytest.approx(np.cosh(2))]
 
+def test_sinh2():
+	f = Sinh(2)
+	assert f.val == [pytest.approx(np.sinh(2))]
+	assert f.der['x'] == [0]
 
-def test_invalid_add():
-	with pytest.raises(ValueError) as excinfo:
-		add_invalid()
-	assert 'Operand in addition is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-
-def mul_invalid():
+def test_cosh():
 	x = X(2)
-	f = x * 'hello'
+	f = Cosh(x)
+	assert f.val == [pytest.approx(np.cosh(2))]
+	assert f.der['x'] == [pytest.approx(np.sinh(2))]
 
+def test_cosh2():
+	f = Cosh(2)
+	assert f.val == [pytest.approx(np.cosh(2))]
+	assert f.der['x'] == [0]
 
-def test_invalid_mul():
-	with pytest.raises(ValueError) as excinfo:
-		mul_invalid()
-	assert 'Operand in multiplication is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def sub_invalid():
+def test_tanh():
 	x = X(2)
-	f = x - 'hello'
+	f = Tanh(x)
+	assert f.val == [pytest.approx(np.tanh(2))]
+	assert f.der['x'] == [pytest.approx(1 / (np.cosh(2) ** 2))]
 
-def test_invalid_sub():
-	with pytest.raises(ValueError) as excinfo:
-		sub_invalid()
-	assert 'Operand in subtraction is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def rsub_invalid():
+def test_logistic():
 	x = X(2)
-	f = 'hello' - x
+	f = Logistic(x)
+	assert f.val == [1 / (1 + np.exp(-2))]
+	assert f.der['x'] == [np.exp(-2) / ((1 + np.exp(-2)) ** 2)]
 
-def test_invalid_rsub():
-	with pytest.raises(ValueError) as excinfo:
-		rsub_invalid()
-	assert 'Operand in subtraction is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def div_invalid():
+def test_sqrt():
 	x = X(2)
-	f = x / 'hello'
+	f = Sqrt(x)
+	assert f.val == [np.sqrt(2)]
+	assert f.der['x'] == [0.5 * 2 ** (-0.5)]
 
-def test_invalid_dif():
-	with pytest.raises(ValueError) as excinfo:
-		div_invalid()
-	assert 'Operand in division is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def rdiv_invalid():
-	x = X(2)
-	f = 'hello' / x
-
-def test_invalid_rdiv():
-	with pytest.raises(ValueError) as excinfo:
-		rdiv_invalid()
-	assert 'Operand in division is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def pow_invalid():
-	x = X(2)
-	f = x ** 'hello'
-
-def test_invalid_pow():
-	with pytest.raises(ValueError) as excinfo:
-		pow_invalid()
-	assert 'Operand in power is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def rpow_invalid():
-	x = X(2)
-	f = 'hello' ** x
-
-def test_invalid_rpow():
-	with pytest.raises(ValueError) as excinfo:
-		rpow_invalid()
-	assert 'Operand in power is invalid. Operand must be an AD object or a number.' == str(excinfo.value)
-
-def ln_invalid():
-	ln = Ln('Hello')
-
-def test_invalid_ln():
-	with pytest.raises(ValueError) as excinfo:
-		ln_invalid()
-	assert E1 == str(excinfo.value)
-
-def log_invalid():
-	log = Log('Hello', 5)
-
-def test_invalid_log():
-	with pytest.raises(ValueError) as excinfo:
-		log_invalid()
-	assert E1 == str(excinfo.value)
-
-def exp_invalid():
-	exp = Exp('Hello')
-
-def test_invalid_exp():
-	with pytest.raises(ValueError) as excinfo:
-		exp_invalid()
-	assert E1 == str(excinfo.value)
-
-def abs_invalid():
-	a = Abs('Hello')
-
-def test_invalid_abs():
-	with pytest.raises(ValueError) as excinfo:
-		abs_invalid()
-	assert E1 == str(excinfo.value)
-
-def sin_invalid():
-	s = Sin('asdf')
-
-def test_invalid_sin():
-	with pytest.raises(ValueError) as excinfo:
-		sin_invalid()
-	assert E1 == str(excinfo.value)
-
-def cos_invalid():
-	c = Cos('asdf')
-
-def test_invalid_cos():
-	with pytest.raises(ValueError) as excinfo:
-		cos_invalid()
-	assert E1 == str(excinfo.value)
-
-def tan_invalid():
-	t = Tan('weqr')
-
-def test_invalid_tan():
-	with pytest.raises(ValueError) as excinfo:
-		tan_invalid()
-	assert E1 == str(excinfo.value)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def test_variables():
+	x = X(2, 'x')
+	y = X(3, 'y')
+	f = x * y
+	assert f.variables == {'x', 'y'}
