@@ -1,6 +1,15 @@
-from superdifferentiator.forward.functions import X, Log
+from superdifferentiator.forward.functions import X, Log, Sin, Cos, Tan
 from superdifferentiator.forward.Vector import Vector
 
+x = X(3)
+sx = Sin(x)
+cx = Cos(x)
+
+fx = sx + cx
+fx = 3 + Cos(x)
+fx = Tan(x) + 3
+
+'''
 x = X(3, 'x')
 y = X(4, 'y')
 fx = x * x * y * y
@@ -31,3 +40,4 @@ for i1 in range(len(xV)):
 	print('Jacobian of f for x =', xV[i1], end = ':\n')
 	print(jacs[i1])
 	print()
+'''

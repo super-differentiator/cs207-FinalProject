@@ -59,33 +59,6 @@ class Log(AD):
 		t = Ln(fun) / np.log(a)
 		super().__init__(t.val, t.der)
 
-		'''
-		val = 0
-		der = {}
-
-		if isinstance(fun, AD):
-			val = [0] * len(fun.val)
-
-			for v in fun.der.keys():
-				der[v] = [0] * len(fun.val)
-
-			for i1 in range(len(fun.val)):
-				# Log base a of function, log_a[f(x)]
-				val = np.log(fun.val[i1]) / np.log(a)
-
-				for var in fun.der.keys():
-					der[var][i1] = fun.der[var][i1] / (np.log(a) * fun.val[i1])
-
-		elif isinstance(fun, (int, float)):
-			# Log base a of a constant, log_a(c)
-			val = np.log(fun) / np.log(a)
-			der['x'] = [0]
-		else:
-			raise ValueError('Invalid first argument, must be an AD object or a number.')
-
-		super().__init__(val, der)
-		'''
-
 class Exp(AD):
 	'''The Exp class implements the exponential function, exp[f(x)]. You initialize
 	an Exp object by passing in another function object or a constant, and the function
@@ -170,7 +143,7 @@ class Sin(AD):
 
 			for i1 in range(len(fun.val)):
 				# Sin of a function, sin[f(x)]
-				val = np.sin(fun.val[i1])
+				val[i1] = np.sin(fun.val[i1])
 
 				for var in fun.der.keys():
 					der[var][i1] = fun.der[var][i1] * np.cos(fun.val[i1])
@@ -202,7 +175,7 @@ class Cos(AD):
 
 			for i1 in range(len(fun.val)):
 				# Cosine of a function, cos[f(x)]
-				val = np.cos(fun.val[i1])
+				val[i1] = np.cos(fun.val[i1])
 
 				for var in fun.der.keys():
 					der[var][i1] = -fun.der[var][i1] * np.sin(fun.val[i1])
@@ -234,7 +207,7 @@ class Tan(AD):
 
 			for i1 in range(len(fun.val)):
 				# Tangent of a function, tan[f(x)]
-				val = np.tan(fun.val[i1])
+				val[i1] = np.tan(fun.val[i1])
 
 				for var in fun.der.keys():
 					der[var][i1] = fun.der[var][i1] / (np.cos(fun.val[i1]) ** 2)
