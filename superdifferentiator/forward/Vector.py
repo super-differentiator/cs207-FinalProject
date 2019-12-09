@@ -90,9 +90,9 @@ class Vector:
 
 	def __le__(self, other):
 		try:
-			return self.euclidean_length() >= other.euclidean_length()
+			return self.euclidean_length() <= other.euclidean_length()
 		except AttributeError:
-			return self.euclidean_length() >= other
+			return self.euclidean_length() <= other
 
 	def __ge__(self, other):
 		try:

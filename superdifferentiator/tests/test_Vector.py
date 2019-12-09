@@ -39,3 +39,26 @@ def test_vector2():
 	assert jac[0, yIdx] == 0
 	assert jac[1, xIdx] == 0
 	assert jac[1, yIdx] == 6 * yV + 4
+
+def test_vector_operators():
+	x1 = X(3)
+	v1 = Vector([x1])
+	x2 = X(4)
+	v2 = Vector([x2])
+
+	assert v1 < v2
+	assert v1 <= v2
+	assert not v1 > v2
+	assert not v1 >= v2
+
+	assert v1 > 2
+	assert v1 >= 2
+	assert v1 < 4
+	assert v1 <= 4
+
+	assert v1 == v1
+	assert v1 != v2
+
+	x3 = X(5, 'x3')
+	v3 = Vector([x1, x3])
+	assert v1 != v3
