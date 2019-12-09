@@ -8,10 +8,11 @@ class AD:
 	and raising to a power, by overloading the +, -, *, /, and ** operators.
 	'''
 
-	def __init__(self, vals, der, s):
+	def __init__(self, vals, der, s, repr_s):
 		self._vals = vals
 		self._der = der # Dictionary of partial derivatives
 		self._s = s
+		self._repr_s = repr_s
 
 	@property
 	def val(self):
@@ -32,6 +33,9 @@ class AD:
 	def __str__(self):
 		return self._s
 
+	def __repr__(self):
+		return self._repr_s
+
 	def jacobian(self):
 		allVars = list(self.variables)
 		jacs = []
@@ -48,6 +52,7 @@ class AD:
 		val = [0] * self.num_vals
 		der = {}
 		s = '(' + str(self) + ') + (' + str(other) + ')'
+		repr_s = '(' + repr(self) + ') + (' + repr(other) + ')'
 
 		if isinstance(other, AD):
 			myVars, otherVars, allVars = getVars(self.der, other.der)
@@ -73,7 +78,7 @@ class AD:
 		else:
 			raise ValueError('Operand in addition is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der, s)
+		return AD(val, der, s, repr_s)
 
 	def __radd__(self, other):
 		return self + other
@@ -82,6 +87,7 @@ class AD:
 		val = 0
 		der = {}
 		s = '(' + str(self) + ') * (' + str(other) + ')'
+		repr_s = '(' + repr(self) + ') * (' + repr(other) + ')'
 
 		if isinstance(other, AD):
 			val = [0] * self.num_vals
@@ -113,7 +119,7 @@ class AD:
 		else:
 			raise ValueError('Operand in multiplication is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der, s)
+		return AD(val, der, s, repr_s)
 
 	def __rmul__(self, other):
 		return self * other
@@ -149,6 +155,7 @@ class AD:
 		val = [0] * self.num_vals
 		der = {}
 		s = '(' + str(self) + ') ** (' + str(other) + ')'
+		repr_s = '(' + repr(self) + ') ** (' + repr(other) + ')'
 
 		if isinstance(other, AD):
 			myVars, otherVars, allVars = getVars(self.der, other.der)
@@ -180,12 +187,13 @@ class AD:
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der, s)
+		return AD(val, der, s, repr_s)
 
 	def __rpow__(self, other):
 		val = [0] * self.num_vals
 		der = {}
 		s = '(' + str(other) + ') ** (' + str(self) + ')'
+		repr_s = '(' + repr(other) + ') ** (' + repr(self) + ')'
 
 		if isinstance(other, (int, float)):
 			for v in self.variables:
@@ -201,7 +209,7 @@ class AD:
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der, s)
+		return AD(val, der, s, repr_s)
 
 	def __eq__(self, other):
 		return type(self) == type(other) and self.val == other.val and self.der == other.der

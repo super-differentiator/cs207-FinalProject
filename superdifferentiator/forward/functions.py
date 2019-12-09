@@ -19,8 +19,9 @@ class X(AD):
 		ders = {name: [1] * len(alphas)}
 
 		s = 'X(' + name + ', \'' + name + '\')'
+		repr_s = 'X(' + str(alphas) + ', \'' + name + '\')'
 
-		super().__init__(alphas, ders, s)
+		super().__init__(alphas, ders, s, repr_s)
 
 class Ln(AD):
 	'''The Ln class implements the natural log function. You initialize an Ln object
@@ -33,6 +34,7 @@ class Ln(AD):
 		der = {}
 
 		s = 'Ln(' + str(fun) + ')'
+		repr_s = 'Ln(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -51,7 +53,7 @@ class Ln(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 			
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Log(AD):
 	'''The Log class implements the general log function with a given base. You initialize
@@ -61,7 +63,7 @@ class Log(AD):
 
 	def __init__(self, fun, a):
 		t = Ln(fun) / np.log(a)
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
 
 class Exp(AD):
 	'''The Exp class implements the exponential function, exp[f(x)]. You initialize
@@ -74,6 +76,7 @@ class Exp(AD):
 		der = {}
 
 		s = 'Exp(' + str(fun) + ')'
+		repr_s = 'Exp(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0]
@@ -95,7 +98,7 @@ class Exp(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Abs(AD):
 	'''The Abs class implements the absolute value function, |f(x)|. You initialize
@@ -111,6 +114,7 @@ class Abs(AD):
 		der = {}
 
 		s = 'Abs(' + str(fun) + ')'
+		repr_s = 'Abs(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -131,7 +135,7 @@ class Abs(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Sin(AD):
 	'''The Sin class implements the sin function. You initialize a Sin object by
@@ -144,6 +148,7 @@ class Sin(AD):
 		der = {}
 
 		s = 'Sin(' + str(fun) + ')'
+		repr_s = 'Sin(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -165,7 +170,7 @@ class Sin(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Cos(AD):
 	'''The Cos class implements the cosine function. You initialize a Cos object
@@ -178,6 +183,7 @@ class Cos(AD):
 		der = {}
 
 		s = 'Cos(' + str(fun) + ')'
+		repr_s = 'Cos(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -199,7 +205,7 @@ class Cos(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Tan(AD):
 	'''The Tan class implements the tangent function. You initialize a Tan object
@@ -212,6 +218,7 @@ class Tan(AD):
 		der = {}
 
 		s = 'Tan(' + str(fun) + ')'
+		repr_s = 'Tan(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -232,12 +239,12 @@ class Tan(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Sqrt(AD):
 	def __init__(self, fun):
 		t = fun ** 0.5
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
 
 class Arcsin(AD):
 	def __init__(self, fun):
@@ -245,6 +252,7 @@ class Arcsin(AD):
 		der = {}
 
 		s = 'Arcsin(' + str(fun) + ')'
+		repr_s = 'Arcsin(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -264,7 +272,7 @@ class Arcsin(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Arccos(AD):
 	def __init__(self, fun):
@@ -272,6 +280,7 @@ class Arccos(AD):
 		der = {}
 
 		s = 'Arccos(' + str(fun) + ')'
+		repr_s = 'Arccos(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -291,7 +300,7 @@ class Arccos(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Arctan(AD):
 	def __init__(self, fun):
@@ -299,6 +308,7 @@ class Arctan(AD):
 		der = {}
 
 		s = 'Arctan(' + str(fun) + ')'
+		repr_s = 'Arctan(' + repr(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -317,24 +327,24 @@ class Arctan(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der, s)
+		super().__init__(val, der, s, repr_s)
 
 class Sinh(AD):
 	def __init__(self, fun):
 		t = (Exp(fun) - Exp(-fun)) / 2
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
 
 class Cosh(AD):
 	def __init__(self, fun):
 		t = (Exp(fun) + Exp(-fun)) / 2
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
 
 class Tanh(AD):
 	def __init__(self, fun):
 		t = Sinh(fun) / Cosh(fun)
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
 
 class Logistic(AD):
 	def __init__(self, fun):
 		t = 1 / (1 + Exp(-fun))
-		super().__init__(t.val, t.der, str(t))
+		super().__init__(t.val, t.der, str(t), repr(t))
