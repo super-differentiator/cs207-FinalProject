@@ -8,9 +8,10 @@ class AD:
 	and raising to a power, by overloading the +, -, *, /, and ** operators.
 	'''
 
-	def __init__(self, vals, der):
+	def __init__(self, vals, der, s):
 		self._vals = vals
 		self._der = der # Dictionary of partial derivatives
+		self._s = s
 
 	@property
 	def val(self):
@@ -28,6 +29,9 @@ class AD:
 	def num_vals(self):
 		return len(self.val)
 
+	def __str__(self):
+		return self._s
+
 	def jacobian(self):
 		allVars = list(self.variables)
 		jacs = []
@@ -43,6 +47,7 @@ class AD:
 	def __add__(self, other):
 		val = [0] * self.num_vals
 		der = {}
+		s = '(' + str(self) + ') + (' + str(other) + ')'
 
 		if isinstance(other, AD):
 			myVars, otherVars, allVars = getVars(self.der, other.der)
@@ -68,7 +73,7 @@ class AD:
 		else:
 			raise ValueError('Operand in addition is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der)
+		return AD(val, der, s)
 
 	def __radd__(self, other):
 		return self + other
@@ -76,6 +81,7 @@ class AD:
 	def __mul__(self, other):
 		val = 0
 		der = {}
+		s = '(' + str(self) + ') * (' + str(other) + ')'
 
 		if isinstance(other, AD):
 			val = [0] * self.num_vals
@@ -98,7 +104,6 @@ class AD:
 
 		elif isinstance(other, (int, float)):
 			# Multiplying the function by a constant, f(x) * c
-			print('Val:', self.val, 'Der:', self.der)
 			val = [v * other for v in self.val]
 
 			# Multiply each partial by the constant
@@ -108,7 +113,7 @@ class AD:
 		else:
 			raise ValueError('Operand in multiplication is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der)
+		return AD(val, der, s)
 
 	def __rmul__(self, other):
 		return self * other
@@ -143,6 +148,7 @@ class AD:
 	def __pow__(self, other):
 		val = [0] * self.num_vals
 		der = {}
+		s = '(' + str(self) + ') ** (' + str(other) + ')'
 
 		if isinstance(other, AD):
 			myVars, otherVars, allVars = getVars(self.der, other.der)
@@ -174,11 +180,12 @@ class AD:
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der)
+		return AD(val, der, s)
 
 	def __rpow__(self, other):
 		val = [0] * self.num_vals
 		der = {}
+		s = '(' + str(other) + ') ** (' + str(self) + ')'
 
 		if isinstance(other, (int, float)):
 			for v in self.variables:

@@ -18,7 +18,9 @@ class X(AD):
 		# Dictionary of partial derivatives. Currently only one var, so only one partial
 		ders = {name: [1] * len(alphas)}
 
-		super().__init__(alphas, ders)
+		s = 'X(' + name + ', \'' + name + '\')'
+
+		super().__init__(alphas, ders, s)
 
 class Ln(AD):
 	'''The Ln class implements the natural log function. You initialize an Ln object
@@ -29,6 +31,8 @@ class Ln(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Ln(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -47,7 +51,7 @@ class Ln(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 			
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Log(AD):
 	'''The Log class implements the general log function with a given base. You initialize
@@ -69,6 +73,8 @@ class Exp(AD):
 		val = 0
 		der = {}
 
+		s = 'Exp(' + str(fun) + ')'
+
 		if isinstance(fun, AD):
 			val = [0]
 
@@ -89,7 +95,7 @@ class Exp(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Abs(AD):
 	'''The Abs class implements the absolute value function, |f(x)|. You initialize
@@ -103,6 +109,8 @@ class Abs(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Abs(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -123,7 +131,7 @@ class Abs(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Sin(AD):
 	'''The Sin class implements the sin function. You initialize a Sin object by
@@ -134,6 +142,8 @@ class Sin(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Sin(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -155,7 +165,7 @@ class Sin(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Cos(AD):
 	'''The Cos class implements the cosine function. You initialize a Cos object
@@ -166,6 +176,8 @@ class Cos(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Cos(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -187,7 +199,7 @@ class Cos(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Tan(AD):
 	'''The Tan class implements the tangent function. You initialize a Tan object
@@ -198,6 +210,8 @@ class Tan(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Tan(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -218,7 +232,7 @@ class Tan(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Sqrt(AD):
 	def __init__(self, fun):
@@ -229,6 +243,8 @@ class Arcsin(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Arcsin(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -248,12 +264,14 @@ class Arcsin(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Arccos(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Arccos(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -273,12 +291,14 @@ class Arccos(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Arctan(AD):
 	def __init__(self, fun):
 		val = 0
 		der = {}
+
+		s = 'Arctan(' + str(fun) + ')'
 
 		if isinstance(fun, AD):
 			val = [0] * len(fun.val)
@@ -297,7 +317,7 @@ class Arctan(AD):
 		else:
 			raise ValueError('Invalid first argument, must be an AD object or a number.')
 
-		super().__init__(val, der)
+		super().__init__(val, der, s)
 
 class Sinh(AD):
 	def __init__(self, fun):
