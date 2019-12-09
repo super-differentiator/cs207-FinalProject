@@ -61,7 +61,7 @@ class Log(AD):
 
 	def __init__(self, fun, a):
 		t = Ln(fun) / np.log(a)
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))
 
 class Exp(AD):
 	'''The Exp class implements the exponential function, exp[f(x)]. You initialize
@@ -237,7 +237,7 @@ class Tan(AD):
 class Sqrt(AD):
 	def __init__(self, fun):
 		t = fun ** 0.5
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))
 
 class Arcsin(AD):
 	def __init__(self, fun):
@@ -322,19 +322,19 @@ class Arctan(AD):
 class Sinh(AD):
 	def __init__(self, fun):
 		t = (Exp(fun) - Exp(-fun)) / 2
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))
 
 class Cosh(AD):
 	def __init__(self, fun):
 		t = (Exp(fun) + Exp(-fun)) / 2
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))
 
 class Tanh(AD):
 	def __init__(self, fun):
 		t = Sinh(fun) / Cosh(fun)
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))
 
 class Logistic(AD):
 	def __init__(self, fun):
 		t = 1 / (1 + Exp(-fun))
-		super().__init__(t.val, t.der)
+		super().__init__(t.val, t.der, str(t))

@@ -201,7 +201,7 @@ class AD:
 		else:
 			raise ValueError('Operand in power is invalid. Operand must be an AD object or a number.')
 
-		return AD(val, der)
+		return AD(val, der, s)
 
 	def __eq__(self, other):
 		return type(self) == type(other) and self.val == other.val and self.der == other.der
