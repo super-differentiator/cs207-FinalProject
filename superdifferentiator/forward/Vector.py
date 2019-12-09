@@ -50,7 +50,7 @@ class Vector:
 
 		return allVars, jac
 
-	def eucliean_length(self):
+	def euclidean_length(self):
 		'''Calculates the euclidean, or L2 length of the function.
 		NOTE: Only calculates for the first given values to evaluate the function at.
 		'''
@@ -77,13 +77,25 @@ class Vector:
 		return not self == other
 
 	def __lt__(self, other):
-		return self.euclidean_length() < other.euclidean_length()
+		try:
+			return self.euclidean_length() < other.euclidean_length()
+		except AttributeError:
+			return self.euclidean_length() < other
 
 	def __gt__(self, other):
-		return self.euclidean_length() > other.euclidean_length()
+		try:
+			return self.euclidean_length() > other.euclidean_length()
+		except AttributeError:
+			return self.euclidean_length() > other
 
 	def __le__(self, other):
-		return self.euclidean_length() >= other.euclidean_length()
+		try:
+			return self.euclidean_length() >= other.euclidean_length()
+		except AttributeError:
+			return self.euclidean_length() >= other
 
 	def __ge__(self, other):
-		return self.euclidean_length() >= other.euclidean_length()
+		try:
+			return self.euclidean_length() >= other.euclidean_length()
+		except AttributeError:
+			return self.euclidean_length() >= other
