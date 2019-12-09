@@ -49,3 +49,41 @@ class Vector:
 						jac[i1][row, col] = 0
 
 		return allVars, jac
+
+	def eucliean_length(self):
+		'''Calculates the euclidean, or L2 length of the function.
+		NOTE: Only calculates for the first given values to evaluate the function at.
+		'''
+		l = 0
+		for f in self.functions:
+			l += f.val[0] ** 2
+		l **= 0.5
+		return l
+
+	def __len__(self):
+		return len(self.functions)
+
+	def __eq__(self, other):
+		if len(self) != len(other):
+			return False
+
+		for f, o in zip(self.functions, other.functions):
+			if f != o:
+				return False
+
+		return True
+
+	def __ne__(self, other):
+		return not self == other
+
+	def __lt__(self, other):
+		return self.euclidean_length() < other.euclidean_length()
+
+	def __gt__(self, other):
+		return self.euclidean_length() > other.euclidean_length()
+
+	def __le__(self, other):
+		return self.euclidean_length() >= other.euclidean_length()
+
+	def __ge__(self, other):
+		return self.euclidean_length() >= other.euclidean_length()
