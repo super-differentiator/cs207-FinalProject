@@ -90,16 +90,3 @@ class LinearRegression:
         sstot = np.sum((y - ybar) ** 2)
         return 1 - ssreg / sstot
         # return np.mean((y - y_pred) ** 2)
-
-# # standardize data
-x = np.array([[1,2],[3,4],[5,6],[7,8]])
-y = np.array([1,2,3,5])
-x = (x - x.mean(axis=0)) / x.std(axis=0)
-y = (y - y.mean(axis=0)) / y.std(axis=0)
-
-clf = LinearRegression(max_iter=10000)
-clf.fit(x, y)
-
-print(clf.get_params())
-print(clf.predict(x))
-print(clf.score(x, y))
