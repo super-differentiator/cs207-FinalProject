@@ -28,8 +28,8 @@ class LinearRegression:
         for i in range(self.x.shape[0]):
             cur = 0
             for j in range(len(ws)):
-                cur += self.x[i][j] * ws[j]
-            fx += (self.y[i] - cur) * (self.y[i] - cur)
+                cur = cur + self.x[i][j] * ws[j]
+            fx = fx + (self.y[i] - cur) * (self.y[i] - cur)
 
         fx = fx / self.x.shape[0]
 
@@ -63,7 +63,7 @@ class LinearRegression:
 
         grad = GD(max_iter=self.max_iter, step_size=0.001, precision=0.00001)
         res = grad.cal_gradient_nd(self._linear_obj, wad)
-        print(grad.obj)
+        # print(grad.obj)
         self.coef_ = res
         self.intercept = self.coef_[-1][0]
 
@@ -82,9 +82,9 @@ class LinearRegression:
         """
         yhat = self.predict(x)
         yhat = np.array(yhat).T[0]
-        print('hello')
-        print(yhat)
-        print('hello')
+        # print('hello')
+        # print(yhat)
+        # print('hello')
         ybar = np.mean(y)
         ssreg = np.sum((y - yhat) ** 2)
         sstot = np.sum((y - ybar) ** 2)
