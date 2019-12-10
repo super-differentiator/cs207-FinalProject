@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="superdifferentiator-cs207", # Replace with your own username
+    name="superdifferentiator-cs207-harvard", # Replace with your own username
     version="0.0.1",
     author="Qiang Fei, Jordan Turley, Shucheng Yan",
     author_email="jordan_turley@g.harvard.edu",
