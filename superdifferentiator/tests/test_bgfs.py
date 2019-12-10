@@ -1,4 +1,4 @@
-from superdifferentiator.forward.bgfs import bgfs
+from superdifferentiator.additional_features.bgfs import bgfs
 
 
 
