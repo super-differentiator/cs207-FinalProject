@@ -1,6 +1,6 @@
 from superdifferentiator.forward.functions import Sin,X
 from superdifferentiator.forward.Vector import Vector
-from superdifferentiator.additional_features.Newton import Newton
+from superdifferentiator.additional_features.newton_method import Newton
 
 
 def test_newton1():
