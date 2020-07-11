@@ -3,3 +3,5 @@
 Group 5
 
 Jordan Turley, Qiang Fei, Shucheng Yan
+
+For information, setup, and usage, please refer to [docs/documentation.ipynb](https://github.com/super-differentiator/cs207-FinalProject/blob/master/docs/documentation.ipynb).
